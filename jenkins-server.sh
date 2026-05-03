@@ -5,19 +5,31 @@
 # Jenkins Installation
 ################################################################################################
 
-sudo apt update -y  # It will update repo 
-sudo apt install fontconfig openjdk-21-jre # It will install Openjdk
+#!/bin/bash
 
-sudo java -version  # It will check java version
+sudo apt update -y
+sudo apt install -y fontconfig openjdk-21-jre wget
 
+java -version
+
+# Add Jenkins key
 sudo wget -O /etc/apt/keyrings/jenkins-keyring.asc \
   https://pkg.jenkins.io/debian-stable/jenkins.io-2026.key
+
+# Add Jenkins repo
 echo "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc]" \
-  https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
-  /etc/apt/sources.list.d/jenkins.list > /dev/null
-sudo apt update
-sudo apt install jenkins -y  # It will install jenkins
-echo "jenkins ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+  https://pkg.jenkins.io/debian-stable binary/ | \
+  sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
+
+sudo apt update -y
+sudo apt install -y jenkins
+
+# Enable & start Jenkins
+sudo systemctl enable jenkins
+sudo systemctl start jenkins
+
+# Give sudo access safely
+echo "jenkins ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/jenkins
 
 #####################################################################################################
 # Terraform Installation
